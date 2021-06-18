@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.custom.exception.BusinessException;
 import com.example.demo.custom.exception.ControllerException;
 import com.example.demo.entity.User;
+import com.example.demo.restClient.RestClient;
 import com.example.demo.service.UserServiceInterface;
 
 @RestController
@@ -27,13 +28,16 @@ public class UserController {
 	
     @PostMapping("/add")
     public ResponseEntity<?> addUser(@RequestBody User user) {
+    	
+    	User anotherUser = new User(user.getName()+" 1");
+    	anotherUser.setAdharNumber(RestClient.getAdhar());
+    	
+    	user.setAdharNumber(RestClient.getAdhar());
     	try {
     		User savedUser = serviceInterface.addUser(user);
         	return new ResponseEntity<User>(savedUser,HttpStatus.CREATED);
     	} catch (BusinessException e) {
     		ControllerException ce = new ControllerException(e.getErrorCode(), e.getErrorMessage());
-    		// TODO: check the error code for returning different HTTP response.
-    		// for now only returning bad request
     		return new ResponseEntity<ControllerException> (ce, HttpStatus.BAD_REQUEST);
     	}
     }

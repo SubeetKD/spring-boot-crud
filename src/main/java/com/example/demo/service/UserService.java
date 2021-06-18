@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.example.demo.custom.exception.BusinessException;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.restClient.RestClient;
 
 /*
  * This method returns the required value not response entity
@@ -22,15 +21,10 @@ public class UserService implements UserServiceInterface {
 
 	@Autowired
 	private UserRepository repo;
-	
-	@Autowired
-	private RestClient restClient;
 
 	@Override
-    public User addUser(User user) {
-		
-		// TODO: Error or exception may occur here, handle the exception in RestClient.
-		user.setAdharNumber(restClient.getAdhar());
+    public User addUser(User user) throws BusinessException {
+
 		try {
 			if (user.getName().isEmpty() && user.getName().isBlank()) {
 				throw new BusinessException("601","Please send proper name. It's blank");
